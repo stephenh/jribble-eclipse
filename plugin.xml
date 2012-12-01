@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command commandId="jribble_eclipse.foo" label="Foo" style="push" />
+      </menuContribution>
+   </extension>
+   <extension point="org.eclipse.ui.commands">
+      <command id="jribble_eclipse.foo" defaultHandler="jribble_eclipse.SampleHandler" name="Sample"/>
+   </extension>
+</plugin>
