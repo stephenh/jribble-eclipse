@@ -9,4 +9,10 @@
    <extension point="org.eclipse.ui.commands">
       <command id="jribble_eclipse.foo" defaultHandler="jribble_eclipse.SampleHandler" name="Sample"/>
    </extension>
+   <extension id="jribblebuilder" name="jribble Builder" point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="false">
+         <run class="jribble_eclipse.JribbleBuilder" />
+      </builder>
+   </extension>
 </plugin>

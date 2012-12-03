@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jribble-eclipse
 Bundle-SymbolicName: jribble-eclipse; singleton:=true
-Bundle-Version: 1.0.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: jribble_eclipse.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt;bundle-version="3.7.2",
@@ -16,5 +16,5 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.jface.text
 Export-Package: jribble_eclipse
 Bundle-ClassPath: .,
- lib/jribble-SNAPSHOT.jar,
- lib/protobuf-java-2.4.1.jar
+ lib/jribble.jar,
+ lib/protobuf-java.jar

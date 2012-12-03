@@ -5,11 +5,24 @@ import com.google.jribble.JribbleProtos.Method;
 import com.google.jribble.JribbleProtos.Type;
 import com.google.jribble.JribbleProtos.Type.TypeType;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 class JribbleVisitor extends ASTVisitor {
+  
+  private final CompilationUnit unit;
+  
+  JribbleVisitor(CompilationUnit unit) {
+    this.unit = unit;
+  }
+
+  @Override
+  public void preVisit(ASTNode node) {
+    System.out.println("   visiting: " + node.getClass());
+  }
 
   @Override
   public boolean visit(PackageDeclaration node) {
