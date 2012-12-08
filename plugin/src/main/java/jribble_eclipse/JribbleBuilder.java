@@ -53,7 +53,7 @@ public class JribbleBuilder extends IncrementalProjectBuilder {
                 if (element instanceof ICompilationUnit) {
                   ICompilationUnit unit = (ICompilationUnit) element;
                   CompilationUnit parse = parse(unit);
-                  parse.accept(new JribbleVisitor(parse));
+                  parse.accept(new JribbleVisitor());
                   System.out.println("  parsed: " + relative);
                 }
               }
