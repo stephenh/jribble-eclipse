@@ -44,17 +44,17 @@ public class JribbleBuilder extends IncrementalProjectBuilder {
     try {
       delta.accept(new IResourceDeltaVisitor() {
         public boolean visit(IResourceDelta delta) throws CoreException {
+          System.out.println("changed: " + delta.getResource().getRawLocation());
           if ("java".equals(delta.getResource().getFullPath().getFileExtension())) {
-            System.out.println("changed: " + delta.getResource().getRawLocation());
             for (IPackageFragmentRoot root : javaProject.getPackageFragmentRoots()) {
               if (root.getPath().isPrefixOf(delta.getResource().getFullPath())) {
                 IPath relative = delta.getResource().getFullPath().removeFirstSegments(root.getPath().segmentCount());
                 IJavaElement element = javaProject.findElement(relative);
                 if (element instanceof ICompilationUnit) {
-                  ICompilationUnit unit = (ICompilationUnit) element;
-                  CompilationUnit parse = parse(unit);
-                  parse.accept(new JribbleVisitor());
-                  System.out.println("  parsed: " + relative);
+                  // ICompilationUnit unit = (ICompilationUnit) element;
+                  // CompilationUnit parse = parse(unit);
+                  // parse.accept(new JribbleVisitor());
+                  // System.out.println("  parsed: " + relative);
                 }
               }
             }
