@@ -217,6 +217,75 @@ public class JribbleVisitorTest {
       "}");
   }
   
+  @Test
+  public void testNewInstance() throws Exception {
+    DeclaredType t = compile(//
+      "package p;",
+      "public class X {",
+      "  public void foo() {",
+      "    new Integer(1);",
+      "  };",
+      "}").get(0);
+    assertText(t, //
+      "name {",
+      "  pkg: \"p\"",
+      "  name: \"X\"",
+      "}",
+      "modifiers {",
+      "  isPublic: true",
+      "}",
+      "member {",
+      "  type: Method",
+      "  modifiers {",
+      "    isPublic: true",
+      "  }",
+      "  method {",
+      "    name: \"foo\"",
+      "    returnType {",
+      "      type: Void",
+      "    }",
+      "    body {",
+      "      type: Block",
+      "      block {",
+      "        statement {",
+      "          type: Expr",
+      "          expr {",
+      "            type: NewObject",
+      "            newObject {",
+      "              clazz {",
+      "                pkg: \"java.lang\"",
+      "                name: \"Integer\"",
+      "              }",
+      "              signature {",
+      "                name: \"Integer\"",
+      "                owner {",
+      "                  pkg: \"java.lang\"",
+      "                  name: \"Integer\"",
+      "                }",
+      "                paramType {",
+      "                  type: Primitive",
+      "                  primitiveType: Int",
+      "                }",
+      "                returnType {",
+      "                  type: Void",
+      "                }",
+      "              }",
+      "              argument {",
+      "                type: Literal",
+      "                literal {",
+      "                  type: Int",
+      "                  intValue: 1",
+      "                }",
+      "              }",
+      "            }",
+      "          }",
+      "        }",
+      "      }",
+      "    }",
+      "  }",
+      "}");
+  }
+  
   
   private static List<DeclaredType> compile(String... lines) {
     ASTNode n = runConversion(AST.JLS4, join(lines), true, true, true, "X.java");

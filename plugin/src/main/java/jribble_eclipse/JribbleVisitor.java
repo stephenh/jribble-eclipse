@@ -15,6 +15,7 @@ import com.google.jribble.JribbleProtos.Method;
 import com.google.jribble.JribbleProtos.MethodCall;
 import com.google.jribble.JribbleProtos.MethodSignature;
 import com.google.jribble.JribbleProtos.Modifiers;
+import com.google.jribble.JribbleProtos.NewObject;
 import com.google.jribble.JribbleProtos.PrimitiveType;
 import com.google.jribble.JribbleProtos.Statement;
 import com.google.jribble.JribbleProtos.Type;
@@ -25,6 +26,7 @@ import com.google.jribble.JribbleProtos.Type.TypeType;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
@@ -34,8 +36,8 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -172,11 +174,29 @@ public class JribbleVisitor extends ASTVisitor {
           .setBoolValue(_bool.booleanValue())
           .build())
         .build();
+    } else if (expression instanceof NumberLiteral) {
+      NumberLiteral _number = (NumberLiteral) expression;
+      return Expr.newBuilder() //
+        .setType(ExprType.Literal)
+        .setLiteral(Literal.newBuilder() //
+          .setType(LiteralType.Int) // TODO What if it's not an int? Can it be?
+          .setIntValue(Integer.parseInt(_number.getToken()))
+          .build())
+        .build();
+    } else if (expression instanceof ClassInstanceCreation) {
+      ClassInstanceCreation _new = (ClassInstanceCreation) expression;
+      NewObject.Builder b = NewObject.newBuilder();
+      b.setClazz(toGlobalName(_new.resolveTypeBinding()));
+      b.setSignature(toSignature(_new.resolveConstructorBinding()));
+      for (Expression param : (List<Expression>) _new.arguments()) {
+        b.addArgument(toExpression(param));
+      }
+      return Expr.newBuilder().setType(ExprType.NewObject).setNewObject(b.build()).build();
     } else {
       throw new IllegalStateException("Unhandled expression " + expression.getClass() + " " + expression);
     }
   }
-  
+
   // assume the ITypeBinding is a class, given the caller called us
   private static GlobalName toGlobalName(ITypeBinding binding) {
     GlobalName.Builder b = GlobalName.newBuilder();
@@ -184,7 +204,7 @@ public class JribbleVisitor extends ASTVisitor {
     b.setName(binding.getName());
     return b.build();
   }
-  
+
   private static MethodSignature toSignature(IMethodBinding binding) {
     MethodSignature.Builder b = MethodSignature.newBuilder();
     b.setName(binding.getName());
@@ -225,7 +245,7 @@ public class JribbleVisitor extends ASTVisitor {
       throw new IllegalStateException("Unhandled type " + type);
     }
   }
-  
+
   private static Type toType(ITypeBinding type) {
     if (type.isPrimitive()) {
       PrimitiveType t = null;
