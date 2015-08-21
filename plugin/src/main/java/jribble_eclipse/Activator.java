@@ -6,7 +6,7 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-  private static BundleContext context;
+  private static volatile BundleContext context;
 
   static BundleContext getContext() {
     return context;
@@ -14,7 +14,6 @@ public class Activator implements BundleActivator {
 
   @Override
   public void start(BundleContext bundleContext) throws Exception {
-    ResourcesPlugin.getWorkspace().getRoot().getProjects();
     Activator.context = bundleContext;
   }
 

@@ -1,18 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <!-- conditional logic for showing/hiding menu items -->
+   <extension point="org.eclipse.core.expressions.definitions">
+      <definition id="jribble.definition.project">
+         <iterate ifEmpty="false" operator="or">
+            <adapt type="org.eclipse.core.resources.IProject">
+               <test property="org.eclipse.core.resources.projectNature" value="org.apache.ivyde.eclipse.ivynature" />
+            </adapt>
+         </iterate>
+      </definition>
+      <definition id="jribble.definition.nonproject">
+         <iterate>
+            <adapt type="org.eclipse.core.resources.IProject">
+               <not>
+                  <test property="org.eclipse.core.resources.projectNature" value="org.apache.ivyde.eclipse.ivynature" />
+               </not>
+            </adapt>
+         </iterate>
+      </definition>
+   </extension>
+   
+   <!-- commands, e.g invoked by menus -->
+   <extension point="org.eclipse.ui.commands">
+      <command id="jribble_eclipse.foo" defaultHandler="jribble_eclipse.SampleHandler" name="Sample"/>
+      <command id="jribble_eclipse.addnature" defaultHandler="jribble_eclipse.AddNatureHandler" name="Add Jribble"/>
+      <command id="jribble_eclipse.removenature" defaultHandler="jribble_eclipse.RemoveNatureHandler" name="Remove Jribble"/>
+   </extension>
+
+   <!-- menus -->
    <extension point="org.eclipse.ui.menus">
       <menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
          <command commandId="jribble_eclipse.foo" label="Foo" style="push" />
       </menuContribution>
+      <!-- Add nature -->
+      <menuContribution locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command commandId="jribble_eclipse.addnature" label="Add Jribble" style="push">
+            <visibleWhen checkEnabled="false">
+               <reference definitionId="jribble.definition.nonproject" />
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <!-- Remove nature -->
+      <menuContribution locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command commandId="jribble_eclipse.removenature" label="Remove Jribble" style="push">
+            <visibleWhen checkEnabled="false">
+               <reference definitionId="jribble.definition.project" />
+            </visibleWhen>
+         </command>
+      </menuContribution>
    </extension>
-   <extension point="org.eclipse.ui.commands">
-      <command id="jribble_eclipse.foo" defaultHandler="jribble_eclipse.SampleHandler" name="Sample"/>
-   </extension>
-   <extension id="jribblebuilder" name="jribble Builder" point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="false">
+   
+   <!-- our builder -->
+   <extension point="org.eclipse.core.resources.builders" id="jribblebuilder" name="Jribble Builder">
+      <builder hasNature="true">
          <run class="jribble_eclipse.JribbleBuilder" />
       </builder>
+   </extension>
+   
+   <!-- our nature -->
+   <extension point="org.eclipse.core.resources.natures" id="jribblenature" name="Jribble Nature">
+      <runtime>
+         <run class="jribble_eclipse.JribbleNature"></run>
+      </runtime>
    </extension>
 </plugin>
