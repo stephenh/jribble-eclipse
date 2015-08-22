@@ -6,7 +6,7 @@
       <definition id="jribble.definition.project">
          <iterate ifEmpty="false" operator="or">
             <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="org.apache.ivyde.eclipse.ivynature" />
+               <test property="org.eclipse.core.resources.projectNature" value="jribble-eclipse.jribblenature" />
             </adapt>
          </iterate>
       </definition>
@@ -14,7 +14,7 @@
          <iterate>
             <adapt type="org.eclipse.core.resources.IProject">
                <not>
-                  <test property="org.eclipse.core.resources.projectNature" value="org.apache.ivyde.eclipse.ivynature" />
+                  <test property="org.eclipse.core.resources.projectNature" value="jribble-eclipse.jribblenature" />
                </not>
             </adapt>
          </iterate>
@@ -23,16 +23,12 @@
    
    <!-- commands, e.g invoked by menus -->
    <extension point="org.eclipse.ui.commands">
-      <command id="jribble_eclipse.foo" defaultHandler="jribble_eclipse.SampleHandler" name="Sample"/>
       <command id="jribble_eclipse.addnature" defaultHandler="jribble_eclipse.AddNatureHandler" name="Add Jribble"/>
       <command id="jribble_eclipse.removenature" defaultHandler="jribble_eclipse.RemoveNatureHandler" name="Remove Jribble"/>
    </extension>
 
    <!-- menus -->
    <extension point="org.eclipse.ui.menus">
-      <menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
-         <command commandId="jribble_eclipse.foo" label="Foo" style="push" />
-      </menuContribution>
       <!-- Add nature -->
       <menuContribution locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command commandId="jribble_eclipse.addnature" label="Add Jribble" style="push">
@@ -53,7 +49,7 @@
    
    <!-- our builder -->
    <extension point="org.eclipse.core.resources.builders" id="jribblebuilder" name="Jribble Builder">
-      <builder hasNature="true">
+      <builder>
          <run class="jribble_eclipse.JribbleBuilder" />
       </builder>
    </extension>

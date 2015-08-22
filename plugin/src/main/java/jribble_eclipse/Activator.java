@@ -1,6 +1,5 @@
 package jribble_eclipse;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
